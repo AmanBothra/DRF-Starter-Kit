@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import environ
 
 env = environ.Env()
@@ -6,7 +7,6 @@ environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -38,110 +38,105 @@ USE_TZ = True
 # Application definition
 
 THIRD_PARTY_APPS = [
-    'rest_framework',
-    'corsheaders',
-    'drf_yasg',
-    'debug_toolbar',
+	'rest_framework',
+	'corsheaders',
+	'drf_yasg',
+	'debug_toolbar',
 ]
 
 DJANGO_APPS = [
-    'config',
+	'config',
 ]
 
 INSTALLED_APPS = [
-    'jazzmin',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    *THIRD_PARTY_APPS,
+	'jazzmin',
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	*THIRD_PARTY_APPS,
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': [],
+		'APP_DIRS': True,
+		'OPTIONS': {
+			'context_processors': [
+				'django.template.context_processors.debug',
+				'django.template.context_processors.request',
+				'django.contrib.auth.context_processors.auth',
+				'django.contrib.messages.context_processors.messages',
+			],
+		},
+	},
 ]
-
 
 # Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env("DB_NAME"),                      
-        'USER': env("DB_USER"),
-        'PASSWORD': env("DB_PASSWORD"),
-        'HOST': env("DB_HOST"),
-        'PORT': 5432,
-    }
+	'default': {
+		'ENGINE': 'django.db.backends.postgresql',
+		'NAME': env("DB_NAME"),
+		'USER': env("DB_USER"),
+		'PASSWORD': env("DB_PASSWORD"),
+		'HOST': env("DB_HOST"),
+		'PORT': 5432,
+	}
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+	{
+		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+	},
 ]
 
 REST_FRAMEWORK = {
-    'PAGE_SIZE': 10,
-    # 'EXCEPTION_HANDLER': 'skyliner.base.exceptions.handle_exception',
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.TokenAuthentication",
-        # "rest_framework.authentication.SessionAuthentication",
-        # "rest_framework.authentication.BasicAuthentication",
-    ),
-    # "DEFAULT_RENDERER_CLASSES": ['skyliner.base.renderers.JSONRenderer'],
-    "DEFAULT_RENDERER_CLASSES": [
-        # 'skyliner.base.renderers.JSONRenderer',
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
-    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+	'PAGE_SIZE': 10,
+	"DEFAULT_AUTHENTICATION_CLASSES": (
+		"rest_framework.authentication.TokenAuthentication",
+	),
+	"DEFAULT_RENDERER_CLASSES": [
+		"lib.renderer.CustomRenderer",
+		"rest_framework.renderers.JSONRenderer",
+		"rest_framework.renderers.BrowsableAPIRenderer",
+	],
+	"DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+	"DEFAULT_PERMISSION_CLASSES": (
+		"rest_framework.permissions.IsAuthenticated",
+	),
+	"DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+	'DEFAULT_PARSER_CLASSES': [
+		'rest_framework.parsers.JSONParser',
+		'rest_framework.parsers.FormParser',
+		'rest_framework.parsers.MultiPartParser',
+	],
 }
-
-
-
 
 # STATIC
 # ------------------------------------------------------------------------------
@@ -150,8 +145,8 @@ STATIC_ROOT = str(BASE_DIR / "static_collection")
 STATIC_URL = "/static/"
 
 STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+	"django.contrib.staticfiles.finders.FileSystemFinder",
+	"django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
 
 # MEDIA
@@ -162,20 +157,20 @@ MEDIA_URL = "/media/"
 # cors-headers
 # ------------------------------------------------------------------------------
 CORS_ALLOW_ALL_ORIGINS = (
-    True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+	True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 )
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+	"http://localhost:3000",
 ]  # If this is used, then not need to use `CORS_ALLOW_ALL_ORIGINS = True`
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    # match localhost with any port
-    r"^http:\/\/localhost:*([0-9]+)?$",
-    r"^https:\/\/localhost:*([0-9]+)?$",
-    r"^http:\/\/127.0.0.1:*([0-9]+)?$",
-    r"^https:\/\/127.0.0.1:*([0-9]+)?$",
-    r"^https:\/\/*:*([0-9]+)?$",
-    r"^http:\/\/*:*([0-9]+)?$",
+	# match localhost with any port
+	r"^http:\/\/localhost:*([0-9]+)?$",
+	r"^https:\/\/localhost:*([0-9]+)?$",
+	r"^http:\/\/127.0.0.1:*([0-9]+)?$",
+	r"^https:\/\/127.0.0.1:*([0-9]+)?$",
+	r"^https:\/\/*:*([0-9]+)?$",
+	r"^http:\/\/*:*([0-9]+)?$",
 ]
 
 # EMAIL
