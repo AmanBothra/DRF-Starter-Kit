@@ -20,32 +20,32 @@ class BaseModel(TimeStampedModel):
 	def updated_on(self):
 		return self.modified
 
-	def save(self, *args, **kwargs):
-		if self.pk:
-			# If self.pk is not None then it's an update.
-			cls = self.__class__
-			old = cls.objects.get(pk=self.pk)
-			# This will get the current model state since super().save() isn't called yet.
-			new = self  # This gets the newly instantiated Mode object with the new values.
-			changed_fields = []
-			for field in cls._meta.get_fields():
-				field_name = field.name
-				try:
-					if getattr(old, field_name) != getattr(new, field_name):
-						changed_fields.append(field_name)
-				except Exception as ex:  # Catch field does not exist exception
-					pass
-			kwargs["update_fields"] = changed_fields
-		super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if self.pk:
+            # If self.pk is not None then it's an update.
+            cls = self.__class__
+            old = cls.objects.get(pk=self.pk)
+            # This will get the current model state since super().save() isn't called yet.
+            new = self  # This gets the newly instantiated Mode object with the new values.
+            changed_fields = []
+            for field in cls._meta.get_fields():
+                field_name = field.name
+                try:
+                    if getattr(old, field_name) != getattr(new, field_name):
+                        changed_fields.append(field_name)
+                except Exception as ex:  # Catch field does not exist exception
+                    pass
+            kwargs["update_fields"] = changed_fields
+        super().save(*args, **kwargs)
 
-	@classmethod
-	def get_raw_id_fields(cls):
-		raw_id_fields = []
-		for field in cls._meta.get_fields():
-			if any((isinstance(field.remote_field, ForeignObjectRel), isinstance(field.remote_field, ManyToManyRel),
-					isinstance(field.remote_field, OneToOneRel))):
-				raw_id_fields.append(field.name)
-		return raw_id_fields
+    @classmethod
+    def get_raw_id_fields(cls):
+        raw_id_fields = []
+        for field in cls._meta.get_fields():
+            if any((isinstance(field.remote_field, ForeignObjectRel), isinstance(field.remote_field, ManyToManyRel),
+                    isinstance(field.remote_field, OneToOneRel))):
+                raw_id_fields.append(field.name)
+        return raw_id_fields
 
 	@classmethod
 	def get_all_field_names(cls):
