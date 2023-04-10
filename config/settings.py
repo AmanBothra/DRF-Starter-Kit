@@ -1,20 +1,14 @@
 from pathlib import Path
-
+import os
 import environ
 
 env = environ.Env()
 environ.Env.read_env()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure--!@mt3mnjyhw*_o@lcs0^y7plt639o!tii2wygh5goc=@n!r#6'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -35,6 +29,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'useraccount.User'
+
 # Application definition
 
 THIRD_PARTY_APPS = [
@@ -46,9 +42,10 @@ THIRD_PARTY_APPS = [
 
 DJANGO_APPS = [
 	'config',
+	'apps.useraccount',
 ]
 
-INSTALLED_APPS = [
+LOCAL_APPS = [
 	'jazzmin',
 	'django.contrib.admin',
 	'django.contrib.auth',
@@ -56,12 +53,14 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	*THIRD_PARTY_APPS,
 ]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
+	'debug_toolbar.middleware.DebugToolbarMiddleware',
 	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,18 +86,23 @@ TEMPLATES = [
 ]
 
 # Database
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.postgresql',
+# 		'NAME': env("DB_NAME"),
+# 		'USER': env("DB_USER"),
+# 		'PASSWORD': env("DB_PASSWORD"),
+# 		'HOST': env("DB_HOST"),
+# 		'PORT': 5432,
+# 	}
+# }
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': env("DB_NAME"),
-		'USER': env("DB_USER"),
-		'PASSWORD': env("DB_PASSWORD"),
-		'HOST': env("DB_HOST"),
-		'PORT': 5432,
+		'ENGINE': 'django.db.backends.sqlite3',
+		'NAME': os.path.join(BASE_DIR, 'sqlite.db'),
 	}
 }
 
-# Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -117,7 +121,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-	'PAGE_SIZE': 10,
 	"DEFAULT_AUTHENTICATION_CLASSES": (
 		"rest_framework.authentication.TokenAuthentication",
 	),
@@ -126,19 +129,13 @@ REST_FRAMEWORK = {
 		"rest_framework.renderers.JSONRenderer",
 		"rest_framework.renderers.BrowsableAPIRenderer",
 	],
-	"DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+	"DEFAULT_PAGINATION_CLASS": "lib.paginations.CustomPagination",
 	"DEFAULT_PERMISSION_CLASSES": (
 		"rest_framework.permissions.IsAuthenticated",
 	),
-	"DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
-	'DEFAULT_PARSER_CLASSES': [
-		'rest_framework.parsers.JSONParser',
-		'rest_framework.parsers.FormParser',
-		'rest_framework.parsers.MultiPartParser',
-	],
 }
 
-# STATIC
+# STATIC 
 # ------------------------------------------------------------------------------
 STATICFILES_DIRS = [str(BASE_DIR / "static")]
 STATIC_ROOT = str(BASE_DIR / "static_collection")
@@ -156,21 +153,21 @@ MEDIA_URL = "/media/"
 
 # cors-headers
 # ------------------------------------------------------------------------------
-CORS_ALLOW_ALL_ORIGINS = (
-	True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
-)
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = [
 	"http://localhost:3000",
-]  # If this is used, then not need to use `CORS_ALLOW_ALL_ORIGINS = True`
-CORS_ALLOWED_ORIGIN_REGEXES = [
-	# match localhost with any port
-	r"^http:\/\/localhost:*([0-9]+)?$",
-	r"^https:\/\/localhost:*([0-9]+)?$",
-	r"^http:\/\/127.0.0.1:*([0-9]+)?$",
-	r"^https:\/\/127.0.0.1:*([0-9]+)?$",
-	r"^https:\/\/*:*([0-9]+)?$",
-	r"^http:\/\/*:*([0-9]+)?$",
+]
+CORS_ALLOW_HEADERS = [
+	"accept",
+	"accept-encoding",
+	"authorization",
+	"content-type",
+	"dnt",
+	"origin",
+	"user-agent",
+	"x-csrftoken",
+	"x-requested-with",
+	"timezone",
 ]
 
 # EMAIL
