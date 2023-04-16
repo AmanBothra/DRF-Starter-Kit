@@ -1,11 +1,14 @@
+import random
+import string
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
-from .manager import CustomUserManager
-from lib.models import BaseModel
-from lib.utils import PathAndRename, file_size, image_file_extension_validator
 from lib.constants import USER_TYPE
+from lib.models import BaseModel
+from lib.utils import PathAndRename, image_file_extension_validator
+from .manager import CustomUserManager
 
 
 class User(BaseModel, AbstractBaseUser, PermissionsMixin):
@@ -37,3 +40,17 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
 
 	def get_full_name(self):
 		return f'{self.first_name} {self.last_name}'
+
+
+class EmailOtpCode(BaseModel):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	otp = models.CharField(max_length=6)
+	expires_at = models.DateTimeField()
+
+	@classmethod
+	def create(cls, user):
+		otp = ''.join(random.choice(string.digits) for _ in range(6))
+		expires_at = timezone.now() + timezone.timedelta(minutes=2)
+		otp_obj = cls(user=user, otp=otp, expires_at=expires_at)
+		otp_obj.save()
+		return otp_obj
